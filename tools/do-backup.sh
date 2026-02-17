@@ -1,20 +1,25 @@
 #!/bin/bash
 
-POSTGRES_HOST="localhost"
-POSTGRES_PORT="5432"
-POSTGRES_USER="user"
-POSTGRES_PASSWORD="fill-in-your-password"
-POSTGRES_DB="db"
-SCHEMA="public"
-BACKUP_FILE="./backup_$(date +%Y-%m-%d).sql"
+# User variables - Change these to match your server setup and backup preferences
+REMOTE_DB_HOST="255.255.255.255"
+REMOTE_DB_PORT="5432"
+REMOTE_DB_USER="tknt-agent"
+REMOTE_DB_PASSWORD="XY5G98pw0aFGJ7MgQ6QS"
+REMOTE_DB_NAME="tknt"
+SCHEMA="tasknote"
 DOCKER_IMAGE="postgres:15.8-bookworm"
+SERVICE="tasknote"
 
-echo "Backing up database ${POSTGRES_DB} from host ${POSTGRES_HOST} with user ${POSTGRES_USER}..."
+# Internal variables - Do not change these unless you know what you're doing
+BACKUP_FILE="./${SERVICE}_backup_$(date +%Y-%m-%d_%H%M%S).sql"
+
+echo "Backing up database ${REMOTE_DB_NAME} from host ${REMOTE_DB_HOST} with user ${REMOTE_DB_USER}..."
 
 docker run --rm \
-  -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  -e PGPASSWORD="${REMOTE_DB_PASSWORD}" \
+  --network="host" \
   "${DOCKER_IMAGE}" \
-  pg_dump -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  pg_dump -h "${REMOTE_DB_HOST}" -p "${REMOTE_DB_PORT}" -U "${REMOTE_DB_USER}" -d "${REMOTE_DB_NAME}" \
   --data-only --schema="${SCHEMA}" --inserts --no-comments \
   --on-conflict-do-nothing > "${BACKUP_FILE}"
 

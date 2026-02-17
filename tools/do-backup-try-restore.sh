@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# User variables - Change these to match your PostgreSQL setup and backup file
+BACKUP_FILE="tasknote_backup_2026-02-17.sql"
+DOCKER_IMAGE="postgres:15.8-bookworm"
+
+# Internal variables - Do not change these unless you know what you're doing
 POSTGRES_HOST="localhost"
 POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="default"
 POSTGRES_DB="postgres"
-BACKUP_FILE="tasknote_backup_2026-02-17.sql"
-DOCKER_IMAGE="postgres:15.8-bookworm"
 CONTAINER_NAME="tmp-backup-db"
 
 if [ ! -f "${BACKUP_FILE}" ]; then
@@ -39,23 +42,13 @@ done
 
 echo "PostgreSQL is ready. Starting to restore backup from ${BACKUP_FILE}..."
 
-DB_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${CONTAINER_NAME}" 2>/dev/null)
-
-if [ $? -ne 0 ] || [ -z "${DB_IP}" ]; then
-  echo "Error: Failed to get container IP address."
-  echo "Make sure the container is running and accessible, then try again."
-  exit 1
-fi
-
-echo "Container IP address: ${DB_IP}"
-
 if [ -f "init.sql" ] && [ -s "init.sql" ]; then
   echo "Init file found. Initializing database..."
   docker run --rm \
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  psql -h ${DB_IP} -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/init.sql
+  psql -h 127.0.0.1 -p "${LOCAL_PORT}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/init.sql
 
   if [ $? -ne 0 ]; then
     echo "Error: Database initialization failed."
@@ -69,7 +62,7 @@ docker run --rm \
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  psql -h ${DB_IP} -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/${BACKUP_FILE}
+  psql -h 127.0.0.1 -p "${LOCAL_PORT}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f "/backup/${BACKUP_FILE}"
 
 if [ $? -ne 0 ]; then
   echo "Error: Database restore failed."
@@ -78,5 +71,5 @@ fi
 
 echo "Database restore completed successfully."
 echo "You can connect to the database using the following command:"
-echo "psql -h localhost -p ${LOCAL_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+echo "psql -h 127.0.0.1 -p ${LOCAL_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
 echo "⚠️ Remember to stop the PostgreSQL container after use with: docker stop ${CONTAINER_NAME}"

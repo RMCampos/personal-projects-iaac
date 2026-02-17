@@ -15,6 +15,7 @@ fi
 
 docker run --rm \
   -v "$(pwd)":/backup \
+  --network="host" \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
   psql -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/${BACKUP_FILE}
