@@ -14,9 +14,9 @@ echo "Backing up database ${POSTGRES_DB} from host ${POSTGRES_HOST} with user ${
 docker run --rm \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  pg_dump -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
-  --data-only --schema=${SCHEMA} --inserts --no-comments \
-  --on-conflict-do-nothing > ${BACKUP_FILE}
+  pg_dump -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
+  --data-only --schema="${SCHEMA}" --inserts --no-comments \
+  --on-conflict-do-nothing > "${BACKUP_FILE}"
 
 if [ $? -ne 0 ]; then
   echo "Error: Backup failed."
@@ -24,4 +24,4 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Backup completed successfully. The backup file is located at ${BACKUP_FILE}"
-echo "File size: $(du -h ${BACKUP_FILE} | cut -f1)"
+echo "File size: $(du -h "${BACKUP_FILE}" | cut -f1)"

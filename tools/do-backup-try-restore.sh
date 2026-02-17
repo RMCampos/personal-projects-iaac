@@ -1,11 +1,10 @@
 #!/bin/bash
 
 POSTGRES_HOST="localhost"
-POSTGRES_USER="user"
-POSTGRES_PASSWORD="fill-in-your-password"
-POSTGRES_DB="db"
-SCHEMA="public"
-BACKUP_FILE="backup_2026-02-17.sql"
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="default"
+POSTGRES_DB="postgres"
+BACKUP_FILE="tasknote_backup_2026-02-17.sql"
 DOCKER_IMAGE="postgres:15.8-bookworm"
 CONTAINER_NAME="tmp-backup-db"
 
@@ -25,22 +24,22 @@ echo "Using local port ${LOCAL_PORT} for PostgreSQL container."
 
 # Start empty postgres DB with docker
 docker run --rm -d \
-  --name ${CONTAINER_NAME} \
-  -e POSTGRES_USER=${POSTGRES_USER} \
-  -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
-  -e POSTGRES_DB=${POSTGRES_DB} \
-  -p ${LOCAL_PORT}:5432 \
-  ${DOCKER_IMAGE}
+  --name "${CONTAINER_NAME}" \
+  -e POSTGRES_USER="${POSTGRES_USER}" \
+  -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD}" \
+  -e POSTGRES_DB="${POSTGRES_DB}" \
+  -p 127.0.0.1:"${LOCAL_PORT}":5432 \
+  "${DOCKER_IMAGE}"
 
 # Wait for the database to be ready
-until docker exec -it ${CONTAINER_NAME} pg_isready -U "${POSTGRES_USER}" -h localhost -p ${LOCAL_PORT}; do
+until docker exec -it "${CONTAINER_NAME}" pg_isready -U "${POSTGRES_USER}"; do
   echo "Waiting for PostgreSQL to be ready..."
   sleep 5
 done
 
 echo "PostgreSQL is ready. Starting to restore backup from ${BACKUP_FILE}..."
 
-DB_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME} 2>/dev/null)
+DB_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${CONTAINER_NAME}" 2>/dev/null)
 
 if [ $? -ne 0 ] || [ -z "${DB_IP}" ]; then
   echo "Error: Failed to get container IP address."
@@ -56,7 +55,7 @@ if [ -f "init.sql" ] && [ -s "init.sql" ]; then
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  psql -h ${DB_IP} -p ${LOCAL_PORT} -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/init.sql
+  psql -h ${DB_IP} -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/init.sql
 
   if [ $? -ne 0 ]; then
     echo "Error: Database initialization failed."
@@ -70,7 +69,7 @@ docker run --rm \
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  psql -h ${DB_IP} -p ${LOCAL_PORT} -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/${BACKUP_FILE}
+  psql -h ${DB_IP} -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/${BACKUP_FILE}
 
 if [ $? -ne 0 ]; then
   echo "Error: Database restore failed."
