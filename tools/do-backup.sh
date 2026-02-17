@@ -8,7 +8,6 @@ POSTGRES_DB="db"
 SCHEMA="public"
 BACKUP_FILE="./backup_$(date +%Y-%m-%d).sql"
 DOCKER_IMAGE="postgres:15.8-bookworm"
-CONTAINER_NAME="db"
 
 echo "Backing up database ${POSTGRES_DB} from host ${POSTGRES_HOST} with user ${POSTGRES_USER}..."
 

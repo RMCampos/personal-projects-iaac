@@ -7,7 +7,7 @@ POSTGRES_DB="db"
 SCHEMA="public"
 BACKUP_FILE="backup_2026-02-17.sql"
 DOCKER_IMAGE="postgres:15.8-bookworm"
-CONTAINER_NAME="db"
+CONTAINER_NAME="tmp-backup-db"
 
 if [ ! -f "${BACKUP_FILE}" ]; then
   echo "Error: Backup file '${BACKUP_FILE}' not found."
@@ -40,7 +40,15 @@ done
 
 echo "PostgreSQL is ready. Starting to restore backup from ${BACKUP_FILE}..."
 
-DB_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME})
+DB_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME} 2>/dev/null)
+
+if [ $? -ne 0 ] || [ -z "${DB_IP}" ]; then
+  echo "Error: Failed to get container IP address."
+  echo "Make sure the container is running and accessible, then try again."
+  exit 1
+fi
+
+echo "Container IP address: ${DB_IP}"
 
 if [ -f "init.sql" ] && [ -s "init.sql" ]; then
   echo "Init file found. Initializing database..."
@@ -72,3 +80,4 @@ fi
 echo "Database restore completed successfully."
 echo "You can connect to the database using the following command:"
 echo "psql -h localhost -p ${LOCAL_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+echo "⚠️ Remember to stop the PostgreSQL container after use with: docker stop ${CONTAINER_NAME}"
