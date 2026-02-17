@@ -1,10 +1,11 @@
 #!/bin/bash
 
-POSTGRES_HOST="localhost"
-POSTGRES_PORT="5432"
-POSTGRES_USER="user"
-POSTGRES_PASSWORD="fill-in-your-password"
-POSTGRES_DB="db"
+# User variables - Change these to match your server setup and backup preferences
+REMOTE_DB_HOST="255.255.255.255"
+REMOTE_DB_PORT="5432"
+REMOTE_DB_USER="postgres"
+REMOTE_DB_PASSWORD="${REMOTE_DB_PASSWORD:-default}"
+REMOTE_DB_NAME="postgres"
 BACKUP_FILE="backup_2026-02-17.sql"
 DOCKER_IMAGE="postgres:15.8-bookworm"
 
@@ -16,9 +17,9 @@ fi
 docker run --rm \
   -v "$(pwd)":/backup \
   --network="host" \
-  -e PGPASSWORD="${POSTGRES_PASSWORD}" \
+  -e PGPASSWORD="${REMOTE_DB_PASSWORD}" \
   "${DOCKER_IMAGE}" \
-  psql -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -f /backup/${BACKUP_FILE}
+  psql -h ${REMOTE_DB_HOST} -p ${REMOTE_DB_PORT} -U "${REMOTE_DB_USER}" -d "${REMOTE_DB_NAME}" -f /backup/${BACKUP_FILE}
 
 if [ $? -ne 0 ]; then
   echo "Error: Database restore failed."

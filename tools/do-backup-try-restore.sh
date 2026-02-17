@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # User variables - Change these to match your PostgreSQL setup and backup file
-BACKUP_FILE="tasknote_backup_2026-02-17.sql"
+BACKUP_FILE="tasknote_backup_2026-02-17_180023.sql"
 DOCKER_IMAGE="postgres:15.8-bookworm"
 
 # Internal variables - Do not change these unless you know what you're doing
@@ -45,6 +45,7 @@ echo "PostgreSQL is ready. Starting to restore backup from ${BACKUP_FILE}..."
 if [ -f "init.sql" ] && [ -s "init.sql" ]; then
   echo "Init file found. Initializing database..."
   docker run --rm \
+  --network="host" \
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
@@ -59,6 +60,7 @@ else
 fi
 
 docker run --rm \
+  --network="host" \
   -v "$(pwd)":/backup \
   -e PGPASSWORD="${POSTGRES_PASSWORD}" \
   "${DOCKER_IMAGE}" \
