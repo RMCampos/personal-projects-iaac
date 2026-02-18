@@ -24,3 +24,12 @@ kubectl get secret timez-people-tls -n timez-people
 # Describe
 kubectl describe certificate timez-people-tls -n timez-people
 ```
+
+# Get logs
+
+```
+kubectl logs -l app=bean-score-backend
+
+# or
+ubectl logs -l app=bean-score-backend --tail=100
+```

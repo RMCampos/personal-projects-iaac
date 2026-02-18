@@ -1,5 +1,5 @@
 # ignore all sql files
-*.sql
+tools/*.sql
 
 # ignore init sql file
 tools/init.sql

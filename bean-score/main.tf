@@ -45,6 +45,17 @@ resource "kubernetes_secret_v1" "bean_score_secrets" {
   }
 }
 
+resource "kubernetes_config_map_v1" "db_init_script" {
+  metadata {
+    name      = "db-init-script"
+    namespace = kubernetes_namespace_v1.bean_score.metadata[0].name
+  }
+
+  data = {
+    "init.sql" = file("${path.module}/init.sql")
+  }
+}
+
 resource "kubernetes_deployment_v1" "bean_score_db" {
   metadata {
     name      = "bean-score-db"
