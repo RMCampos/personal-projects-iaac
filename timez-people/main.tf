@@ -72,9 +72,16 @@ resource "kubernetes_ingress_v1" "timez_people_ingress" {
     namespace = kubernetes_namespace_v1.timez_people.metadata[0].name
     annotations = {
       "kubernetes.io/ingress.class" = "traefik"
+      "cert-manager.io/cluster-issuer"        = "letsencrypt-prod"
+      "traefik.ingress.kubernetes.io/router.tls" = "true"
     }
   }
   spec {
+    tls {
+      hosts       = ["timez.darkroasted.vps-kinghost.net"]
+      secret_name = "timez-people-tls"
+    }
+
     rule {
       host = "timez.darkroasted.vps-kinghost.net"
       http {

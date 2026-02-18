@@ -3,3 +3,11 @@
 
 # ignore init sql file
 tools/init.sql
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfvars
+*.tfvars.json
+*.plan
