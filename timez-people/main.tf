@@ -1,8 +1,13 @@
-# 1. The Deployment (The "How many" and "What image")
+resource "kubernetes_namespace" "timez_people" {
+  metadata {
+    name = "timez-people"
+  }
+}
+
 resource "kubernetes_deployment" "timez_people" {
   metadata {
     name      = "timez-people"
-    namespace = kubernetes_namespace.project_a.metadata[0].name
+    namespace = kubernetes_namespace.timez_people.metadata[0].name
   }
 
   spec {
@@ -31,11 +36,10 @@ resource "kubernetes_deployment" "timez_people" {
   }
 }
 
-# 2. The Service (The internal Load Balancer)
 resource "kubernetes_service" "timez_people_svc" {
   metadata {
     name      = "timez-people-service"
-    namespace = kubernetes_namespace.project_a.metadata[0].name
+    namespace = kubernetes_namespace.timez_people.metadata[0].name
   }
   spec {
     selector = {
@@ -49,11 +53,10 @@ resource "kubernetes_service" "timez_people_svc" {
   }
 }
 
-# 3. The Ingress (The Entry Point)
 resource "kubernetes_ingress_v1" "timez_people_ingress" {
   metadata {
     name      = "timez-people-ingress"
-    namespace = kubernetes_namespace.project_a.metadata[0].name
+    namespace = kubernetes_namespace.timez_people.metadata[0].name
     annotations = {
       "kubernetes.io/ingress.class" = "traefik"
     }
