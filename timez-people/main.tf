@@ -1,13 +1,13 @@
-resource "kubernetes_namespace" "timez_people" {
+resource "kubernetes_namespace_v1" "timez_people" {
   metadata {
     name = "timez-people"
   }
 }
 
-resource "kubernetes_deployment" "timez_people" {
+resource "kubernetes_deployment_v1" "timez_people" {
   metadata {
     name      = "timez-people"
-    namespace = kubernetes_namespace.timez_people.metadata[0].name
+    namespace = kubernetes_namespace_v1.timez_people.metadata[0].name
   }
 
   spec {
@@ -36,10 +36,10 @@ resource "kubernetes_deployment" "timez_people" {
   }
 }
 
-resource "kubernetes_service" "timez_people_svc" {
+resource "kubernetes_service_v1" "timez_people_svc" {
   metadata {
     name      = "timez-people-service"
-    namespace = kubernetes_namespace.timez_people.metadata[0].name
+    namespace = kubernetes_namespace_v1.timez_people.metadata[0].name
   }
   spec {
     selector = {
@@ -56,7 +56,7 @@ resource "kubernetes_service" "timez_people_svc" {
 resource "kubernetes_ingress_v1" "timez_people_ingress" {
   metadata {
     name      = "timez-people-ingress"
-    namespace = kubernetes_namespace.timez_people.metadata[0].name
+    namespace = kubernetes_namespace_v1.timez_people.metadata[0].name
     annotations = {
       "kubernetes.io/ingress.class" = "traefik"
     }
@@ -66,10 +66,11 @@ resource "kubernetes_ingress_v1" "timez_people_ingress" {
       host = "timez.darkroasted.vps-kinghost.net"
       http {
         path {
-          path = "/"
+          path      = "/"
+          path_type = "Prefix"
           backend {
             service {
-              name = kubernetes_service.timez_people_svc.metadata[0].name
+              name = kubernetes_service_v1.timez_people_svc.metadata[0].name 
               port {
                 number = 80
               }
