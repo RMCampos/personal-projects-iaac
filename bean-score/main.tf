@@ -89,7 +89,7 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
     namespace = kubernetes_namespace_v1.bean_score.metadata[0].name
   }
   spec {
-    replicas = 2
+    replicas = 1
     selector { match_labels = { app = "bean-score-db" } }
     template {
       metadata { labels = { app = "bean-score-db" } }
@@ -170,7 +170,7 @@ resource "kubernetes_deployment_v1" "bean_score_backend" {
     namespace = kubernetes_namespace_v1.bean_score.metadata[0].name
   }
   spec {
-    replicas = 1
+    replicas = 2
     selector { match_labels = { app = "bean-score-backend" } }
     template {
       metadata { labels = { app = "bean-score-backend" } }
