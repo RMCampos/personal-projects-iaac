@@ -261,7 +261,7 @@ resource "kubernetes_deployment_v1" "bean_score_frontend" {
             value_from { 
               secret_key_ref {
                 name = kubernetes_secret_v1.bean_score_secrets.metadata[0].name
-                key = "maps_debug"
+                key = "debug_maps"
               }
             }
           }

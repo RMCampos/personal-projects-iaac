@@ -41,6 +41,9 @@ kubectl logs -l app=bean-score-db -n bean-score
 
 ```
 kubectl exec -it deployment/bean-score-db -n bean-score -- ls /docker-entrypoint-initdb.d/
+
+# check pvc attached
+kubectl describe pod -l app=bean-score-db -n bean-score
 ```
 
 # Restart deployments
@@ -48,4 +51,16 @@ kubectl exec -it deployment/bean-score-db -n bean-score -- ls /docker-entrypoint
 ```
 kubectl rollout restart deployment bean-score-db -n bean-score
 kubectl rollout restart deployment bean-score-backend -n bean-score
+```
+
+# Get last events
+
+```
+kubectl get events -n bean-score --sort-by='.lastTimestamp'
+```
+
+# Delete pods
+
+```
+kubectl delete pod -l app=bean-score-db -n bean-score --force
 ```
