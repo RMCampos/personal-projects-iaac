@@ -89,7 +89,7 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
     namespace = kubernetes_namespace_v1.bean_score.metadata[0].name
   }
   spec {
-    replicas = 1
+    replicas = 2
     selector { match_labels = { app = "bean-score-db" } }
     template {
       metadata { labels = { app = "bean-score-db" } }
@@ -205,7 +205,7 @@ resource "kubernetes_deployment_v1" "bean_score_backend" {
             }
           }
           resources {
-            limits   = { memory = "512Mi", cpu = "500m" }
+            limits   = { memory = "256Mi", cpu = "500m" }
             requests = { memory = "256Mi", cpu = "250m" }
           }
         }

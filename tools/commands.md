@@ -44,6 +44,9 @@ kubectl exec -it deployment/bean-score-db -n bean-score -- ls /docker-entrypoint
 
 # check pvc attached
 kubectl describe pod -l app=bean-score-db -n bean-score
+
+# check pvs status
+kubectl get pvc -n bean-score -w
 ```
 
 # Restart deployments
@@ -63,4 +66,18 @@ kubectl get events -n bean-score --sort-by='.lastTimestamp'
 
 ```
 kubectl delete pod -l app=bean-score-db -n bean-score --force
+```
+
+# Import existing pvc, in case of errors
+
+```
+# terraform import <resource_type>.<resource_name> <namespace>/<k8s_name>
+
+terraform import kubernetes_persistent_volume_claim_v1.bean_score_db_data bean-score/postgres-data-pvc
+```
+
+# Restore backup file
+
+```
+cat your_backup.sql | kubectl exec -i -n bean-score deployment/bean-score-db -- psql -U ${TF_VAR_db_user} -d ${TF_VAR_db_name}
 ```
