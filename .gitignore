@@ -11,3 +11,7 @@ tools/init.sql
 *.tfvars
 *.tfvars.json
 *.plan
+
+# Ignore .env files
+.env
+*.env

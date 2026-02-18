@@ -41,3 +41,14 @@ sudo chmod +x /usr/local/bin/kubectx /usr/local/bin/kubens
 ```
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
 ```
+
+# Apply tf with secrets
+
+```
+# Simple way - beginner
+terraform apply -var="db_user=here" -var="db_password=here" -var="db_name=here"
+
+# Better way - senior? LOL
+export TF_VAR_db_password="my-super-secret-password"
+teraform apply
+```
