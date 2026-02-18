@@ -33,3 +33,15 @@ kubectl logs -l app=bean-score-backend
 # or
 ubectl logs -l app=bean-score-backend --tail=100
 ```
+
+# List things inside a volume or db
+
+```
+kubectl exec -it deployment/bean-score-db -n bean-score -- ls /docker-entrypoint-initdb.d/
+```
+
+# Restart deployments
+
+```
+kubectl rollout restart deployment bean-score-db -n bean-score
+```

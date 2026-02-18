@@ -70,6 +70,11 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
         container {
           image = "postgres:15.8-bookworm"
           name  = "postgres"
+          volume_mount {
+            name       = "init-script-volume"     # Must match PART 2
+            mount_path = "/docker-entrypoint-initdb.d"
+            read_only  = true
+          }
           env {
             name = "POSTGRES_USER"
             value_from {
@@ -98,6 +103,12 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
             }
           }
           port { container_port = 5432 }
+        }
+        volume {
+          name = "init-script-volume"
+          config_map {
+            name = kubernetes_config_map_v1.db_init_script.metadata[0].name
+          }
         }
       }
     }
