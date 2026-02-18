@@ -26,6 +26,16 @@ variable "db_name" {
   sensitive = true
 }
 
+variable "google_maps_api_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "debug_maps" {
+  type    = bool
+  default = true
+}
+
 resource "kubernetes_namespace_v1" "bean_score" {
   metadata {
     name = "bean-score"
@@ -39,9 +49,11 @@ resource "kubernetes_secret_v1" "bean_score_secrets" {
   }
 
   data = {
-    postgres_user     = var.db_user
-    postgres_password = var.db_password
-    postgres_db       = var.db_name
+    postgres_user       = var.db_user
+    postgres_password   = var.db_password
+    postgres_db         = var.db_name
+    google_maps_api_key = var.google_maps_api_key
+    debug_maps          = var.debug_maps ? "true" : "false"
   }
 }
 
@@ -53,6 +65,21 @@ resource "kubernetes_config_map_v1" "db_init_script" {
 
   data = {
     "init.sql" = file("${path.module}/init.sql")
+  }
+}
+
+resource "kubernetes_persistent_volume_claim_v1" "bean_score_db_data" {
+  metadata {
+    name      = "postgres-data-pvc"
+    namespace = kubernetes_namespace_v1.bean_score.metadata[0].name
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "1Gi"
+      }
+    }
   }
 }
 
@@ -74,6 +101,10 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
             name       = "init-script-volume"     # Must match PART 2
             mount_path = "/docker-entrypoint-initdb.d"
             read_only  = true
+          }
+          volume_mount {
+            name       = "postgres-storage"
+            mount_path = "/var/lib/postgresql/data"
           }
           env {
             name = "POSTGRES_USER"
@@ -108,6 +139,12 @@ resource "kubernetes_deployment_v1" "bean_score_db" {
           name = "init-script-volume"
           config_map {
             name = kubernetes_config_map_v1.db_init_script.metadata[0].name
+          }
+        }
+        volume {
+          name = "postgres-storage"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim_v1.bean_score_db_data.metadata[0].name
           }
         }
       }
@@ -209,6 +246,24 @@ resource "kubernetes_deployment_v1" "bean_score_frontend" {
           env {
             name  = "VITE_BACKEND_SERVER"
             value = "https://beanapi.darkroasted.vps-kinghost.net"
+          }
+          env {
+            name  = "VITE_GOOGLE_MAPS_API_KEY"
+            value_from { 
+              secret_key_ref {
+                name = kubernetes_secret_v1.bean_score_secrets.metadata[0].name
+                key = "google_maps_api_key"
+              }
+            }
+          }
+          env {
+            name  = "VITE_DEBUG_MAPS"
+            value_from { 
+              secret_key_ref {
+                name = kubernetes_secret_v1.bean_score_secrets.metadata[0].name
+                key = "maps_debug"
+              }
+            }
           }
         }
       }
