@@ -66,10 +66,10 @@ resource "kubernetes_deployment_v1" "dozzle" {
           image = "amir20/dozzle:latest"
           port { container_port = 8080 }
 
-          args = ["--remote-host", "tcp://kubernetes.default.svc:443"]
-          
-          # Since it's K8s, Dozzle automatically uses the ServiceAccount 
-          # to talk to the K8s API. No need to mount the docker.sock!
+          env {
+            name  = "DOZZLE_REMOTE_HOST"
+            value = "k8s"
+          }
           env {
             name  = "DOZZLE_LEVEL"
             value = "debug"
