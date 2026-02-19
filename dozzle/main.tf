@@ -69,16 +69,12 @@ resource "kubernetes_deployment_v1" "dozzle" {
           # Since it's K8s, Dozzle automatically uses the ServiceAccount 
           # to talk to the K8s API. No need to mount the docker.sock!
           env {
-            name  = "DOZZLE_K8S_MODE"
-            value = "true"
-          }
-          env {
-            name  = "DOZZLE_LOGS_TAIL_SIZE"
-            value = "1000"
-          }
-          env {
             name  = "DOZZLE_LEVEL"
             value = "info"
+          }
+          env {
+            name  = "DOZZLE_REMOTE_AGENT"
+            value = "kubernetes" 
           }
           resources {
             limits   = { memory = "128Mi", cpu = "200m" }
