@@ -28,7 +28,7 @@ resource "kubernetes_cluster_role_v1" "dozzle_reader" {
   metadata { name = "dozzle-log-reader" }
   rule {
     api_groups = [""]
-    resources  = ["pods", "pods/log", "nodes", "events"]
+    resources  = ["pods", "pods/log", "nodes", "events", "namespaces"]
     verbs      = ["get", "list", "watch"]
   }
   rule {
@@ -78,10 +78,6 @@ resource "kubernetes_deployment_v1" "dozzle" {
           env {
             name  = "DOZZLE_LEVEL"
             value = "debug"
-          }
-          env {
-            name  = "DOZZLE_FILTER"
-            value = "status=running" 
           }
           resources {
             limits   = { memory = "128Mi", cpu = "200m" }
