@@ -77,7 +77,7 @@ resource "kubernetes_deployment_v1" "dozzle" {
           }
           env {
             name  = "DOZZLE_LEVEL"
-            value = "debug"
+            value = "info"
           }
           resources {
             limits   = { memory = "128Mi", cpu = "200m" }
