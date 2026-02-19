@@ -16,9 +16,9 @@ resource "kubernetes_namespace_v1" "dozzle" {
 }
 
 # 1. Service Account for Dozzle
-resource "kubernetes_service_account_v1" "dozzle" {
+resource "kubernetes_service_account_v1" "dozzle_pod_viewer" {
   metadata {
-    name      = "dozzle"
+    name      = "dozzle-pod-viewer"
     namespace = kubernetes_namespace_v1.dozzle.metadata[0].name
   }
 }
@@ -30,6 +30,11 @@ resource "kubernetes_cluster_role_v1" "dozzle_reader" {
     api_groups = [""]
     resources  = ["pods", "pods/log", "nodes", "events"]
     verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = ["metrics.k8s.io"]
+    resources  = ["pods"]
+    verbs      = ["get", "list"]
   }
 }
 
@@ -43,7 +48,7 @@ resource "kubernetes_cluster_role_binding_v1" "dozzle_binding" {
   }
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account_v1.dozzle.metadata[0].name
+    name      = kubernetes_service_account_v1.dozzle_pod_viewer.metadata[0].name
     namespace = kubernetes_namespace_v1.dozzle.metadata[0].name
   }
 }
@@ -60,14 +65,14 @@ resource "kubernetes_deployment_v1" "dozzle" {
     template {
       metadata { labels = { app = "dozzle" } }
       spec {
-        service_account_name = kubernetes_service_account_v1.dozzle.metadata[0].name
+        service_account_name = kubernetes_service_account_v1.dozzle_pod_viewer.metadata[0].name
         container {
           name  = "dozzle"
           image = "amir20/dozzle:latest"
           port { container_port = 8080 }
 
           env {
-            name  = "DOZZLE_REMOTE_HOST"
+            name  = "DOZZLE_MODE"
             value = "k8s"
           }
           env {
