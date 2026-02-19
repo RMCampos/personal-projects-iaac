@@ -54,6 +54,7 @@ kubectl get pvc -n bean-score -w
 ```
 kubectl rollout restart deployment bean-score-db -n bean-score
 kubectl rollout restart deployment bean-score-backend -n bean-score
+kubectl rollout restart deployment syncable-backend -n syncable
 ```
 
 # Get last events
@@ -80,4 +81,10 @@ terraform import kubernetes_persistent_volume_claim_v1.bean_score_db_data bean-s
 
 ```
 cat your_backup.sql | kubectl exec -i -n bean-score deployment/bean-score-db -- psql -U ${TF_VAR_db_user} -d ${TF_VAR_db_name}
+```
+
+# Check for cluster conditions
+
+```
+kubectl describe node | grep -A 10 Conditions
 ```
