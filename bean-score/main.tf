@@ -176,7 +176,7 @@ resource "kubernetes_deployment_v1" "bean_score_backend" {
       metadata { labels = { app = "bean-score-backend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/bean-score/backend:backend-v2026.02.18.10"
+          image = "ghcr.io/rmcampos/bean-score/backend:backend-v2026.02.18.11"
           name  = "backend"
           env {
             name = "QUARKUS_PROFILE"

@@ -170,11 +170,11 @@ resource "kubernetes_deployment_v1" "syncable_backend" {
       metadata { labels = { app = "syncable-backend" } }
       spec {
         container {
-          image = "rmcampos/syncable:latest"
+          image = "rmcampos/syncable:v2026.02.19.11"
           name  = "backend"
           liveness_probe {
             http_get {
-              path = "/"
+              path = "/api/health"
               port = 3000
             }
             initial_delay_seconds = 10
@@ -182,7 +182,7 @@ resource "kubernetes_deployment_v1" "syncable_backend" {
           }
           readiness_probe {
             http_get {
-              path = "/"
+              path = "/api/health"
               port = 3000
             }
             initial_delay_seconds = 5
