@@ -26,6 +26,11 @@ variable "db_name" {
   sensitive = true
 }
 
+variable "release_version" {
+  type    = string
+  default = "v2026.02.19.12"
+}
+
 resource "kubernetes_namespace_v1" "syncable" {
   metadata {
     name = "syncable"
@@ -170,7 +175,7 @@ resource "kubernetes_deployment_v1" "syncable_backend" {
       metadata { labels = { app = "syncable-backend" } }
       spec {
         container {
-          image = "rmcampos/syncable:v2026.02.19.11"
+          image = "rmcampos/syncable:${var.release_version}"
           name  = "backend"
           liveness_probe {
             http_get {
