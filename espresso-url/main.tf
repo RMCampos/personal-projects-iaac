@@ -147,9 +147,10 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
       metadata { labels = { app = "espresso-url-backend" } }
       spec {
         init_container {
-          name = "prisma-migrate"
-          image = var.backend_image
-          command = ["sh", "-c", "npx prisma migrate deploy"]
+          name        = "prisma-migrate"
+          image       = var.backend_image
+          working_dir = "/usr/src/app"
+          command     = ["sh", "-c", "npx prisma migrate deploy"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}?schema=public"
