@@ -28,7 +28,7 @@ variable "db_name" {
 
 variable "release_version" {
   type    = string
-  default = "v2026.02.19.12"
+  default = "v2026.02.20.13"
 }
 
 resource "kubernetes_namespace_v1" "syncable" {
