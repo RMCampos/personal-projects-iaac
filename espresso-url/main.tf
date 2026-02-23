@@ -149,10 +149,10 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
         init_container {
           name = "prisma-migrate"
           image = var.backend_image
-          command = ["sh", "-c", "prisma migrate deploy"]
+          command = ["sh", "-c", "npx prisma migrate deploy"]
           env {
             name = "DATABASE_URL"
-            value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}&schema=public"
+            value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}?schema=public"
           }
         }
         container {
@@ -160,7 +160,7 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
           name  = "backend"
           env {
             name = "DATABASE_URL"
-            value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}&schema=public"
+            value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}?schema=public"
           }
           resources {
             limits   = { memory = "128Mi", cpu = "250m" }
@@ -243,7 +243,7 @@ resource "kubernetes_ingress_v1" "espresso_url_ingress" {
   spec {
     tls {
       hosts       = ["espresso-url.darkroasted.vps-kinghost.net", "espresso-urlapi.darkroasted.vps-kinghost.net"]
-      secret_name = "tasknote-tls-certs"
+      secret_name = "espresso-url-tls-certs"
     }
     rule {
       host = "espresso-url.darkroasted.vps-kinghost.net"
