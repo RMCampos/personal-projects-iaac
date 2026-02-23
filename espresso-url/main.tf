@@ -224,8 +224,8 @@ resource "kubernetes_service_v1" "espresso_url_frontend_svc" {
   spec {
     selector = { app = "espresso-url-frontend" }
     port {
-      port = 5173
-      target_port = 5173
+      port = 80
+      target_port = 80
     }
     type = "ClusterIP"
   }
@@ -255,7 +255,7 @@ resource "kubernetes_ingress_v1" "espresso_url_ingress" {
           backend {
             service {
               name = kubernetes_service_v1.espresso_url_frontend_svc.metadata[0].name
-              port { number = 5173 }
+              port { number = 80 }
             }
           }
         }
