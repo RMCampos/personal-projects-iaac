@@ -199,7 +199,7 @@ resource "kubernetes_deployment_v1" "espresso_url_frontend" {
       metadata { labels = { app = "espresso-url-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/espresso-url/frontend:app-v2026.02.23.6"
+          image = "ghcr.io/rmcampos/espresso-url/frontend:app-v2026.02.23.7"
           name  = "frontend"
           port { container_port = 5173 }
           env {
