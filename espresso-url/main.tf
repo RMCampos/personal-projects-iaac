@@ -31,7 +31,7 @@ variable "backend_image" {
   default   = "ghcr.io/rmcampos/espresso-url/backend:api-v2026.02.23.5"
 }
 
-resource "kubernetes_namespace_v1" "espresso-url" {
+resource "kubernetes_namespace_v1" "espresso_url" {
   metadata {
     name = "espresso-url"
   }
