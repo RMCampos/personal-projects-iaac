@@ -40,7 +40,7 @@ resource "kubernetes_namespace_v1" "espresso_url" {
 resource "kubernetes_secret_v1" "espresso_url_secrets" {
   metadata {
     name      = "espresso-url-secrets"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
 
   data = {
@@ -53,7 +53,7 @@ resource "kubernetes_secret_v1" "espresso_url_secrets" {
 resource "kubernetes_persistent_volume_claim_v1" "espresso_url_db_data" {
   metadata {
     name      = "postgres-data-pvc"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     access_modes = ["ReadWriteOnce"]
@@ -68,7 +68,7 @@ resource "kubernetes_persistent_volume_claim_v1" "espresso_url_db_data" {
 resource "kubernetes_deployment_v1" "espresso_url_db" {
   metadata {
     name      = "espresso-url-db"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     replicas = 1
@@ -126,7 +126,7 @@ resource "kubernetes_deployment_v1" "espresso_url_db" {
 resource "kubernetes_service_v1" "espresso_url_db_svc" {
   metadata {
     name      = "espresso-url-db-svc"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     selector = { app = "espresso-url-db" }
@@ -138,7 +138,7 @@ resource "kubernetes_service_v1" "espresso_url_db_svc" {
 resource "kubernetes_deployment_v1" "espresso_url_backend" {
   metadata {
     name      = "espresso-url-backend"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     replicas = 1
@@ -175,7 +175,7 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
 resource "kubernetes_service_v1" "espresso_url_backend_svc" {
   metadata {
     name      = "espresso-url-backend-svc"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     selector = { app = "espresso-url-backend" }
@@ -189,7 +189,7 @@ resource "kubernetes_service_v1" "espresso_url_backend_svc" {
 resource "kubernetes_deployment_v1" "espresso_url_frontend" {
   metadata {
     name      = "espresso-url-frontend"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     replicas = 1
@@ -218,7 +218,7 @@ resource "kubernetes_deployment_v1" "espresso_url_frontend" {
 resource "kubernetes_service_v1" "espresso_url_frontend_svc" {
   metadata {
     name      = "espresso-url-frontend-svc"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
   }
   spec {
     selector = { app = "espresso-url-frontend" }
@@ -234,7 +234,7 @@ resource "kubernetes_service_v1" "espresso_url_frontend_svc" {
 resource "kubernetes_ingress_v1" "espresso_url_ingress" {
   metadata {
     name      = "espresso-url-ingress"
-    namespace = kubernetes_namespace_v1.espresso-url.metadata[0].name
+    namespace = kubernetes_namespace_v1.espresso_url.metadata[0].name
     annotations = {
       "kubernetes.io/ingress.class"    = "traefik"
       "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
