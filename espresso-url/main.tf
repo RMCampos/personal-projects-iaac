@@ -28,7 +28,7 @@ variable "db_name" {
 
 variable "backend_image" {
   type      = string
-  default   = "ghcr.io/rmcampos/espresso-url/backend:api-v2026.02.23.5"
+  default   = "ghcr.io/rmcampos/espresso-url/backend:api-v2026.02.23.6"
 }
 
 resource "kubernetes_namespace_v1" "espresso_url" {
