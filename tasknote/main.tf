@@ -164,7 +164,7 @@ resource "kubernetes_deployment_v1" "tasknote_backend" {
       metadata { labels = { app = "tasknote-backend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/tasknote/api:10"
+          image = "ghcr.io/rmcampos/tasknote/api:11"
           name  = "backend"
           env {
             name = "POSTGRES_DB"
