@@ -28,7 +28,7 @@ variable "db_name" {
 
 variable "backend_image" {
   type      = string
-  default   = "ghcr.io/rmcampos/espresso-url/backend:api-v2026.02.23.6"
+  default   = "ghcr.io/rmcampos/espresso-url/backend:api-v2026.03.03.7"
 }
 
 resource "kubernetes_namespace_v1" "espresso_url" {
@@ -150,7 +150,7 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
           name        = "prisma-migrate"
           image       = var.backend_image
           working_dir = "/usr/src/app"
-          command     = ["sh", "-c", "npx prisma migrate deploy"]
+          command     = ["sh", "-c", "npx prisma db push"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}?schema=public"
@@ -162,6 +162,10 @@ resource "kubernetes_deployment_v1" "espresso_url_backend" {
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@espresso-url-db-svc:5432/${var.db_name}?schema=public"
+          }
+          env {
+            name = "FRONTEND_URL"
+            value = "https://espresso-url.darkroasted.vps-kinghost.net"
           }
           resources {
             limits   = { memory = "128Mi", cpu = "250m" }
