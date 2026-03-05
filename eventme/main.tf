@@ -200,6 +200,10 @@ resource "kubernetes_deployment_v1" "eventme_app" {
             value = "0.0.0.0"
           }
           env {
+            name  = "NODE_OPTIONS"
+            value = "--dns-result-order=ipv4first"
+          }
+          env {
             name = "RESEND_APIKEY"
             value_from {
               secret_key_ref {
@@ -224,6 +228,10 @@ resource "kubernetes_deployment_v1" "eventme_app" {
           env {
             name = "AUTH_URL"
             value = "https://eventme.darkroasted.vps-kinghost.net"
+          }
+          env {
+            name  = "AUTH_TRUST_HOST"
+            value = "true"
           }
           env {
             name = "AUTH_SECRET"
