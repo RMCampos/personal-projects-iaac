@@ -191,6 +191,59 @@ resource "kubernetes_deployment_v1" "eventme_app" {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@eventme-db-svc:5432/${var.db_name}?schema=public"
           }
+          env {
+            name = "RESEND_APIKEY"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.eventme_secrets.metadata[0].name
+                key = "resend_apikey"
+              }
+            }
+          }
+          env {
+            name = "NEXTAUTH_URL"
+            value = "https://eventme.darkroasted.vps-kinghost.net"
+          }
+          env {
+            name = "NEXTAUTH_SECRET"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.eventme_secrets.metadata[0].name
+                key = "nextauth_secret"
+              }
+            }
+          }
+          env {
+            name = "AUTH_URL"
+            value = "https://eventme.darkroasted.vps-kinghost.net"
+          }
+          env {
+            name = "AUTH_SECRET"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.eventme_secrets.metadata[0].name
+                key = "nextauth_secret"
+              }
+            }
+          }
+          env {
+            name = "GOOGLE_CLIENT_ID"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.eventme_secrets.metadata[0].name
+                key = "google_client_id"
+              }
+            }
+          }
+          env {
+            name = "GOOGLE_CLIENT_SECRET"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.eventme_secrets.metadata[0].name
+                key = "google_client_secret"
+              }
+            }
+          }
           resources {
             limits   = { memory = "128Mi", cpu = "250m" }
             requests = { memory = "128Mi", cpu = "250m" }
