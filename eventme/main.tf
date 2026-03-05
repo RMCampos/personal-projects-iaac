@@ -48,12 +48,12 @@ variable "resend_apikey" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.05.7"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.05.9"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.05.7-migrations"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.05.9-migrations"
 }
 
 resource "kubernetes_namespace_v1" "eventme" {
@@ -192,6 +192,14 @@ resource "kubernetes_deployment_v1" "eventme_app" {
             value = "postgresql://${var.db_user}:${var.db_password}@eventme-db-svc:5432/${var.db_name}?schema=public"
           }
           env {
+            name  = "PORT"
+            value = "3000"
+          }
+          env {
+            name  = "HOSTNAME"
+            value = "0.0.0.0"
+          }
+          env {
             name = "RESEND_APIKEY"
             value_from {
               secret_key_ref {
@@ -245,8 +253,24 @@ resource "kubernetes_deployment_v1" "eventme_app" {
             }
           }
           resources {
-            limits   = { memory = "128Mi", cpu = "250m" }
-            requests = { memory = "128Mi", cpu = "250m" }
+            limits   = { memory = "512Mi", cpu = "500m" }
+            requests = { memory = "256Mi", cpu = "100m" }
+          }
+          readiness_probe {
+            exec {
+              command = ["node", "healthcheck.js"]
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 5
+            failure_threshold     = 3
+          }
+          liveness_probe {
+            exec {
+              command = ["node", "healthcheck.js"]
+            }
+            initial_delay_seconds = 15
+            period_seconds        = 10
+            failure_threshold     = 3
           }
         }
       }
