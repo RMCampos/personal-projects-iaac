@@ -48,12 +48,12 @@ variable "resend_apikey" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.05.9"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.06.11"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.05.9-migrations"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.06.11-migrations"
 }
 
 resource "kubernetes_namespace_v1" "eventme" {
@@ -200,8 +200,8 @@ resource "kubernetes_deployment_v1" "eventme_app" {
             value = "0.0.0.0"
           }
           env {
-            name  = "NODE_OPTIONS"
-            value = "--dns-result-order=ipv4first"
+            name  = "NODE_TLS_REJECT_UNAUTHORIZED"
+            value = "0"
           }
           env {
             name = "RESEND_APIKEY"
