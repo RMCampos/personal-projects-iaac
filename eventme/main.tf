@@ -48,12 +48,12 @@ variable "resend_apikey" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.06.12"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.13.17"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.06.12-migrations"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.13.17-migrations"
 }
 
 resource "kubernetes_namespace_v1" "eventme" {
@@ -178,7 +178,7 @@ resource "kubernetes_deployment_v1" "eventme_app" {
         init_container {
           name        = "prisma-migrate"
           image       = var.migrations_image
-          command     = ["node", "node_modules/prisma/build/index.js", "db", "push"]
+          command     = ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@eventme-db-svc:5432/${var.db_name}?schema=public"
