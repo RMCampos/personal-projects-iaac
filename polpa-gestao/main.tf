@@ -233,12 +233,12 @@ resource "kubernetes_deployment_v1" "polpa_gestao_frontend" {
       metadata { labels = { app = "polpa-gestao-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.15.1"
+          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.16.2"
           name  = "frontend"
           port { container_port = 80 }
           resources {
-            limits   = { memory = "128Mi", cpu = "250m" }
-            requests = { memory = "128Mi", cpu = "250m" }
+            limits   = { memory = "128Mi", cpu = "150m" }
+            requests = { memory = "128Mi", cpu = "100m" }
           }
         }
       }
