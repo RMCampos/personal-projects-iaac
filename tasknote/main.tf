@@ -164,7 +164,7 @@ resource "kubernetes_deployment_v1" "tasknote_backend" {
       metadata { labels = { app = "tasknote-backend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/tasknote/api:13"
+          image = "ghcr.io/rmcampos/tasknote/api:15"
           name  = "backend"
           env {
             name = "POSTGRES_DB"
@@ -271,7 +271,7 @@ resource "kubernetes_deployment_v1" "tasknote_frontend" {
       metadata { labels = { app = "tasknote-app" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/tasknote/app:app-v2026.03.16.16"
+          image = "ghcr.io/rmcampos/tasknote/app:app-v2026.03.17.18"
           name  = "frontend"
           port { container_port = 5000 }
           env {
