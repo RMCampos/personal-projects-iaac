@@ -178,7 +178,7 @@ resource "kubernetes_deployment_v1" "eventme_app" {
         init_container {
           name        = "prisma-migrate"
           image       = var.migrations_image
-          command     = ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
+          command     = ["node", "node_modules/prisma/build/index.js", "db", "push"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@eventme-db-svc:5432/${var.db_name}?schema=public"
