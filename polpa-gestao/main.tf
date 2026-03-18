@@ -33,12 +33,12 @@ variable "cpf_cnpj_api_token" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/polpa-gestao/backend:v2026.03.15.5"
+  default = "ghcr.io/rmcampos/polpa-gestao/backend:v2026.03.18.6"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/polpa-gestao/backend:v2026.03.15.5-prisma"
+  default = "ghcr.io/rmcampos/polpa-gestao/backend:v2026.03.18.6-prisma"
 }
 
 resource "kubernetes_namespace_v1" "polpa_gestao" {
@@ -160,7 +160,7 @@ resource "kubernetes_deployment_v1" "polpa_gestao_backend" {
         init_container {
           name        = "prisma-migrate"
           image       = var.migrations_image
-          command     = ["npx", "prisma", "db", "push"]
+          command     = ["npx", "prisma", "migrate", "deploy"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@polpa-gestao-db-svc:5432/${var.db_name}?schema=public"
@@ -233,7 +233,7 @@ resource "kubernetes_deployment_v1" "polpa_gestao_frontend" {
       metadata { labels = { app = "polpa-gestao-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.16.3"
+          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.18.5"
           name  = "frontend"
           port { container_port = 80 }
           resources {
