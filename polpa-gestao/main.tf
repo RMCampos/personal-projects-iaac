@@ -160,7 +160,7 @@ resource "kubernetes_deployment_v1" "polpa_gestao_backend" {
         init_container {
           name        = "prisma-migrate"
           image       = var.migrations_image
-          command     = ["npx", "prisma", "migrate", "deploy"]
+          command     = ["npx", "prisma", "db", "push"]
           env {
             name = "DATABASE_URL"
             value = "postgresql://${var.db_user}:${var.db_password}@polpa-gestao-db-svc:5432/${var.db_name}?schema=public"
