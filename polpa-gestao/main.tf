@@ -233,7 +233,7 @@ resource "kubernetes_deployment_v1" "polpa_gestao_frontend" {
       metadata { labels = { app = "polpa-gestao-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.18.5"
+          image = "ghcr.io/rmcampos/polpa-gestao/frontend:v2026.03.19.6"
           name  = "frontend"
           port { container_port = 80 }
           resources {
