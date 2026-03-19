@@ -88,3 +88,10 @@ cat your_backup.sql | kubectl exec -i -n bean-score deployment/bean-score-db -- 
 ```
 kubectl describe node | grep -A 10 Conditions
 ```
+
+## Unset vars
+
+```bash
+unset $(env | grep TF_VAR | awk -F= '{print $1}')
+```
+
