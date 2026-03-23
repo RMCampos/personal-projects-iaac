@@ -240,7 +240,7 @@ resource "kubernetes_deployment_v1" "bean_score_frontend" {
       metadata { labels = { app = "bean-score-app" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/bean-score/app:app-v2026.03.12.20"
+          image = "ghcr.io/rmcampos/bean-score/app:app-v2026.03.23.21"
           name  = "frontend"
           port { container_port = 80 }
           env {
