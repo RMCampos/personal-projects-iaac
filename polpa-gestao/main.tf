@@ -38,7 +38,7 @@ variable "backend_image" {
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/polpa-gestao/backend:v2026.03.20.8-prisma"
+  default = "ghcr.io/rmcampos/polpa-gestao/backend:api-v2026.03.20.8-prisma"
 }
 
 resource "kubernetes_namespace_v1" "polpa_gestao" {
