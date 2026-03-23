@@ -15,3 +15,7 @@ tools/init.sql
 # Ignore .env files
 .env
 *.env
+
+# Ignore terraform HCL files
+*.hcl
+
