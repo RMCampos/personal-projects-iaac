@@ -48,12 +48,12 @@ variable "resend_apikey" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.17.18"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.23.20"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/event.me:v2026.03.17.18-migrations"
+  default = "ghcr.io/rmcampos/event.me:v2026.03.23.20-migrations"
 }
 
 resource "kubernetes_namespace_v1" "eventme" {
