@@ -33,12 +33,12 @@ variable "cpf_cnpj_api_token" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/polpa-gestao/backend:api-v2026.03.20.8"
+  default = "ghcr.io/rmcampos/polpa-gestao/backend:api-v2026.03.25.11"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/polpa-gestao/backend:api-v2026.03.20.8-prisma"
+  default = "ghcr.io/rmcampos/polpa-gestao/backend:api-v2026.03.25.11-prisma"
 }
 
 resource "kubernetes_namespace_v1" "polpa_gestao" {
@@ -233,7 +233,7 @@ resource "kubernetes_deployment_v1" "polpa_gestao_frontend" {
       metadata { labels = { app = "polpa-gestao-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/polpa-gestao/frontend:app-v2026.03.20.8"
+          image = "ghcr.io/rmcampos/polpa-gestao/frontend:app-v2026.03.25.13"
           name  = "frontend"
           port { container_port = 80 }
           resources {
