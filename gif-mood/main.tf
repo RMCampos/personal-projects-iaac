@@ -38,12 +38,12 @@ variable "giphy_api_key" {
 
 variable "backend_image" {
   type    = string
-  default = "ghcr.io/rmcampos/gif-mood/backend:api-v2026.03.27.1"
+  default = "ghcr.io/rmcampos/gif-mood/backend:api-v2026.03.27.2"
 }
 
 variable "migrations_image" {
   type    = string
-  default = "ghcr.io/rmcampos/gif-mood/backend:api-v2026.03.27.1-prisma"
+  default = "ghcr.io/rmcampos/gif-mood/backend:api-v2026.03.27.2-prisma"
 }
 
 resource "kubernetes_namespace_v1" "gif_mood" {
@@ -147,7 +147,7 @@ resource "kubernetes_deployment_v1" "gif_mood_db" {
         volume {
           name = "postgres-storage"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim_v1.gif_mood_db_data.metadata[0].name
+            claim_name = "postgres-data-pvc"
           }
         }
       }
@@ -252,7 +252,7 @@ resource "kubernetes_deployment_v1" "gif_mood_backend" {
         volume {
           name = "uploads-storage"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim_v1.gif_mood_uploads_data.metadata[0].name
+            claim_name = "uploads-data-pvc"
           }
         }
       }
@@ -286,7 +286,7 @@ resource "kubernetes_deployment_v1" "gif_mood_frontend" {
       metadata { labels = { app = "gif-mood-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/gif-mood/frontend:app-v2026.03.27.2"
+          image = "ghcr.io/rmcampos/gif-mood/frontend:app-v2026.03.27.3"
           name  = "frontend"
           port { container_port = 80 }
           resources {
