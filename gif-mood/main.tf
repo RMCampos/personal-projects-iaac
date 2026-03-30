@@ -286,7 +286,7 @@ resource "kubernetes_deployment_v1" "gif_mood_frontend" {
       metadata { labels = { app = "gif-mood-frontend" } }
       spec {
         container {
-          image = "ghcr.io/rmcampos/gif-mood/frontend:app-v2026.03.28.7"
+          image = "ghcr.io/rmcampos/gif-mood/frontend:app-v2026.03.29.8"
           name  = "frontend"
           port { container_port = 80 }
           resources {
