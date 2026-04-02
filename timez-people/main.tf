@@ -38,7 +38,7 @@ resource "kubernetes_deployment_v1" "timez_people" {
       }
       spec {
         container {
-          image = "ghcr.io/rmcampos/timez-people:latest"
+          image = "ghcr.io/rmcampos/timez-people:v2026.04.02.6"
           name  = "timez-people"
           port {
             container_port = 80
